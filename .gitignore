@@ -2,6 +2,6 @@
 .idea/
 **/__pycache__/**
 .pytest_cache/
-.mypy_cahce/
+.mypy_caсhe/
 .ruff_cache/
 

@@ -18,3 +18,23 @@ dev = [
     "pytest>=9.2.0",
     "ruff>=0.17.3",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "D", "ANN", "SIM", "RUF"]
+ignore = ["N803", "N806"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+files = ["perceptron_lab", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["sklearn.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
