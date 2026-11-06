@@ -8,6 +8,9 @@ dependencies = [
     "scikit-learn>=1.9.1",
 ]
 
+[project.scripts]
+perceptron = "perceptron_lab.cli:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -36,7 +39,7 @@ convention = "google"
 [tool.mypy]
 strict = true
 python_version = "3.12"
-files = ["perceptron_lab", "tests"]
+files = ["perceptron_lab", "tests", "perceptron.py"]
 
 [[tool.mypy.overrides]]
 module = ["sklearn.*"]

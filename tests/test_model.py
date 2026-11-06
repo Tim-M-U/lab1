@@ -1,4 +1,4 @@
-"""Tests for the Perceptron model"""
+"""Tests for the Perceptron model."""
 
 import numpy as np
 import pytest
@@ -12,7 +12,7 @@ Dataset = tuple[FloatArray, IntArray]
 @pytest.fixture
 def and_data() -> Dataset:
     X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=np.float64)
-    y = np.array([0, 0, 0, 1])
+    y = np.array([0, 0, 0, 1], dtype=np.int64)
     return X, y
 
 
@@ -100,3 +100,24 @@ def test_train_rejects_mismatched_labels(and_data: Dataset) -> None:
 
     with pytest.raises(ValueError, match="y must have shape"):
         model.train(X, y[:3])
+
+
+def test_train_rejects_labels_other_than_0_and_1(and_data: Dataset) -> None:
+    X, _ = and_data
+    y = np.array([-1, -1, -1, 1], dtype=np.int64)
+    model = Perceptron(n_features=2)
+
+    with pytest.raises(ValueError, match="only labels 0 and 1"):
+        model.train(X, y)
+
+
+def test_nan_features_are_rejected(and_data: Dataset) -> None:
+    X, y = and_data
+    X_with_nan = X.copy()
+    X_with_nan[0, 0] = np.nan
+    model = Perceptron(n_features=2)
+
+    with pytest.raises(ValueError, match="finite"):
+        model.train(X_with_nan, y)
+    with pytest.raises(ValueError, match="finite"):
+        model.predict(np.array([np.nan, 1.0], dtype=np.float64))

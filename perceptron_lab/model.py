@@ -66,23 +66,30 @@ class Perceptron:
             Predicted class, 0 or 1.
 
         Raises:
-            ValueError: If x has the wrong number of features.
+            ValueError: If x has the wrong number of features or contains NaN/inf.
         """
         if x.shape != (self.n_features,):
             raise ValueError(f"expected {self.n_features} features, got shape {x.shape}")
+        if not np.isfinite(x).all():
+            raise ValueError("features must be finite numbers, got NaN or inf")
         z = float(np.dot(self.weights, x)) + self.bias
         return self.activate(z)
 
     def _check_data(self, X: FloatArray, y: IntArray) -> None:
-        """Validate the shapes of a feature matrix and its labels.
+        """Validate a feature matrix and its labels.
 
         Raises:
-            ValueError: If X is not (n_samples, n_features) or y does not match it.
+            ValueError: If X is not (n_samples, n_features), contains NaN/inf,
+                or y does not match X or holds labels other than 0 and 1.
         """
         if X.ndim != 2 or X.shape[1] != self.n_features:
             raise ValueError(f"X must have shape (n_samples, {self.n_features}), got {X.shape}")
+        if not np.isfinite(X).all():
+            raise ValueError("X must contain only finite numbers, got NaN or inf")
         if y.shape != (X.shape[0],):
             raise ValueError(f"y must have shape ({X.shape[0]},), got {y.shape}")
+        if not np.isin(y, (0, 1)).all():
+            raise ValueError(f"y must contain only labels 0 and 1, got {np.unique(y).tolist()}")
 
     def train(self, X: FloatArray, y: IntArray) -> list[int]:
         """Fit the weights with the perceptron learning rule.
@@ -97,7 +104,7 @@ class Perceptron:
             Number of misclassified samples on each epoch (also stored in errors_).
 
         Raises:
-            ValueError: If the shapes of X and y do not match the model.
+            ValueError: If X or y is invalid (see _check_data).
         """
         self._check_data(X, y)
         self.errors_ = []
